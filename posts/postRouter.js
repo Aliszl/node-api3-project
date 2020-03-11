@@ -8,8 +8,21 @@ router.get('/', async(req, res) => {
   res.status(200).json({ posts });
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async(req, res) => {
   // do your magic!
+  const { id } = req.params;
+  helpers
+    .getById(id)
+    .then(post => {
+      if (!post) {
+        res.status(404).json({ message: "No post with id " + id });
+      } else {
+        res.status(200).json(post);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
 });
 
 router.delete('/:id', (req, res) => {
