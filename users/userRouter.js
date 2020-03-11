@@ -1,5 +1,6 @@
 const express = require('express');
 const helpers = require("./userDb");
+const postHelpers = require("../posts/postDb");
 
 const router = express.Router();
 
@@ -27,10 +28,6 @@ router.post("/", async (req, res) => {
     });
 });
 
-router.post('/:id/posts', (req, res) => {
-  // do your magic!
-});
-
 
 router.get('/', async(req, res) => {
   const users = await helpers.get();
@@ -50,6 +47,33 @@ router.get('/:id', async(req, res) => {
     })
     .catch(error => {
       console.log(error);
+    });
+});
+
+
+
+router.post('/:id/posts', (req, res) => {
+  const { id } = req.params;
+  const payload = req.body;
+  postHelpers
+    .insert(payload)
+    .then(post => {
+      if (!post) {
+        res
+          .staus(404)
+          .json({
+            message: "The user with the specified ID does not exist."
+          });
+      } else {
+        res.status(201).json(payload);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      res.end();
+      res.status(500).json({
+        error: "could not add post for specified user"
+      });
     });
 });
 
@@ -125,7 +149,10 @@ router.put('/:id', async(req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
-  // do your magic!
+  if (!req.body.id) {
+    res.status(422).json({ message: "id is a field required" });
+  }
+
 }
 
 function validateUser(req, res, next) {

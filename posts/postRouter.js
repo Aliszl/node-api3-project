@@ -3,9 +3,10 @@ const helpers = require("./postDb");
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  // const posts = await helpers.get();
-  // res.status(200).json({ posts });
+router.get('/', async(req, res) => {
+
+  const posts = await helpers.get();
+  res.status(200).json({ posts });
 });
 
 router.get('/:id', async(req, res) => {
