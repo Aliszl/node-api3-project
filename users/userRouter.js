@@ -52,9 +52,31 @@ router.get('/:id', async(req, res) => {
 
 
 
+
+router.get('/:id/posts', async(req, res) => {
+  const { id } = req.params;
+
+  const posts= await helpers.getUserPosts(id);
+  helpers
+    .getUserPosts(Number(id))
+    .then(post => {
+      if (!post) {
+        res
+          .status(404)
+          .json({ message: "No posts associated with that user id " });
+      } else {
+        res.status(200).json(posts);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+});
+
 router.post('/:id/posts', (req, res) => {
   const { id } = req.params;
   const payload = req.body;
+  payload.user_id = id;
   postHelpers
     .insert(payload)
     .then(post => {
@@ -77,24 +99,6 @@ router.post('/:id/posts', (req, res) => {
     });
 });
 
-router.get('/:id/posts', async(req, res) => {
-  const { id } = req.params;
-  const posts= await helpers.getUserPosts(id);
-  helpers
-    .getUserPosts(Number(id))
-    .then(post => {
-      if (!post) {
-        res
-          .status(404)
-          .json({ message: "No posts associated with that user id " });
-      } else {
-        res.status(200).json(posts);
-      }
-    })
-    .catch(error => {
-      console.log(error);
-    });
-});
 
 router.delete('/:id', async(req, res) => {
   const { id } = req.params;

@@ -25,14 +25,11 @@ server.use("/users", allRoutes.userRouter)
 server.use("/posts", allRoutes.postRouter)
 
 // const users = [];// each user has { name: 'Gabe', age: 43 }
-// server.post("/users", validateName, validateAge, (req, res) => {
+// server.post("/users", logger, (req, res) => {
 //     // has to have body
 //   // hast to have body.name
-//   // has to have body.age
 //   // name has to be over three chars
-//   // age has to be a number
-//   // age has to be a number over 18
-//   users.push({ name: req.cleanName, age: req.cleanAge });
+//    users.push({ name: req.cleanName});
 //   res.status(201).json(users);
 // });
 
@@ -68,6 +65,9 @@ server.use("/posts", allRoutes.postRouter)
 //     next()
 //   }
 // }
-function logger(req, res, next) {}
+function logger(req, res, next) {
+console.log(`${req.method} ${req.path}`);
+next()
+}
 
 module.exports = server;
