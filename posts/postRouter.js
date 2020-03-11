@@ -1,9 +1,11 @@
 const express = require('express');
+const helpers = require("./postDb");
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  // do your magic!
+router.get('/', async(req, res) => {
+  const posts = await helpers.get();
+  res.status(200).json({ posts });
 });
 
 router.get('/:id', (req, res) => {
