@@ -66,8 +66,14 @@ server.use("/posts", allRoutes.postRouter)
 //   }
 // }
 function logger(req, res, next) {
-console.log(`${req.method} ${req.path}`);
+console.log(`${req.method} ${req.path} ${req.body}`);
 next()
 }
+
+
+// function logger(req, res, next) {
+//   console.log(`log something`);
+//   next()
+//   }
 
 module.exports = server;

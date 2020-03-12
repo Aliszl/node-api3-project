@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const helpers = require("./userDb");
 const postHelpers = require("../posts/postDb");
 
@@ -10,11 +10,9 @@ router.post("/", async (req, res) => {
     .insert(payload)
     .then(post => {
       if (!post) {
-        res
-          .staus(400)
-          .json({
-            errorMessage: "Please provide text for the post"
-          });
+        res.staus(400).json({
+          errorMessage: "Please provide text for the post"
+        });
       } else {
         res.status(201).json(payload);
       }
@@ -28,13 +26,12 @@ router.post("/", async (req, res) => {
     });
 });
 
-
-router.get('/', async(req, res) => {
+router.get("/", async (req, res) => {
   const users = await helpers.get();
-  res.status(200).json({ users});
+  res.status(200).json({ users });
 });
 
-router.get('/:id', async(req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
   helpers
     .getById(id)
@@ -50,13 +47,10 @@ router.get('/:id', async(req, res) => {
     });
 });
 
-
-
-
-router.get('/:id/posts', async(req, res) => {
+router.get("/:id/posts", async (req, res) => {
   const { id } = req.params;
 
-  const posts= await helpers.getUserPosts(id);
+  const posts = await helpers.getUserPosts(id);
   helpers
     .getUserPosts(Number(id))
     .then(post => {
@@ -73,19 +67,19 @@ router.get('/:id/posts', async(req, res) => {
     });
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post("/:id/posts", async (req, res) => {
   const { id } = req.params;
+
+
   const payload = req.body;
   payload.user_id = id;
   postHelpers
     .insert(payload)
     .then(post => {
       if (!post) {
-        res
-          .staus(404)
-          .json({
-            message: "The user with the specified ID does not exist."
-          });
+        res.staus(404).json({
+          message: "The user with the specified ID does not exist."
+        });
       } else {
         res.status(201).json(payload);
       }
@@ -99,15 +93,14 @@ router.post('/:id/posts', (req, res) => {
     });
 });
 
-
-router.delete('/:id', async(req, res) => {
+router.delete("/:id", async (req, res) => {
   const { id } = req.params;
-  const deletedPosts =[];
+  const deletedPosts = [];
 
-  helpers.getById(id).then(post =>{
+  helpers.getById(id).then(post => {
     deletedPosts.push(post);
     res.status(200).json(post);
-  })
+  });
 
   helpers
     .remove(id)
@@ -125,7 +118,7 @@ router.delete('/:id', async(req, res) => {
     });
 });
 
-router.put('/:id', async(req, res) => {
+router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const changes = req.body;
   helpers
@@ -134,7 +127,10 @@ router.put('/:id', async(req, res) => {
       if (!user) {
         res
           .status(404)
-          .json({ message: "Please provide a new name for the  user you wish to update" });
+          .json({
+            message:
+              "Please provide a new name for the  user you wish to update"
+          });
       } else if (!user) {
         res
           .status(400)
@@ -153,10 +149,12 @@ router.put('/:id', async(req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
-  if (!req.body.id) {
-    res.status(422).json({ message: "id is a field required" });
+  if (isNaN(req.params.id)) {
+    res.status(422).json({ message: "id invalid" });
+  } else {
+    req.user = req.params;
+    next();
   }
-
 }
 
 function validateUser(req, res, next) {
