@@ -4,7 +4,13 @@ const postHelpers = require("../posts/postDb");
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+
+function logger(req, res, next) {
+  console.log(`method:${req.method}`);
+  next()
+  }
+
+router.post("/", logger ,async (req, res) => {
   const payload = req.body;
   helpers
     .insert(payload)
@@ -26,12 +32,12 @@ router.post("/", async (req, res) => {
     });
 });
 
-router.get("/", async (req, res) => {
+router.get("/",  logger ,async (req, res) => {
   const users = await helpers.get();
   res.status(200).json({ users });
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", logger ,validateUserId, async (req, res) => {
   const { id } = req.params;
   helpers
     .getById(id)
@@ -67,7 +73,7 @@ router.get("/:id/posts", async (req, res) => {
     });
 });
 
-router.post("/:id/posts", async (req, res) => {
+router.post("/:id/posts", logger, async (req, res) => {
   const { id } = req.params;
 
 
@@ -147,6 +153,8 @@ router.put("/:id", async (req, res) => {
 });
 
 //custom middleware
+
+
 
 function validateUserId(req, res, next) {
   if (isNaN(req.params.id)) {

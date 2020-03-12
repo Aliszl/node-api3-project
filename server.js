@@ -18,14 +18,11 @@ server.use(function(req, res, next) {
   next();
 });
 
-// server.use( postRouter)
-//'/posts',
 server.use("/users", allRoutes.userRouter)
-//'/users',
 server.use("/posts", allRoutes.postRouter)
 
 // const users = [];// each user has { name: 'Gabe', age: 43 }
-// server.post("/users", logger, (req, res) => {
+// server.post("/users", validateName, validateAge, logger,  (req, res) => {
 //     // has to have body
 //   // hast to have body.name
 //   // name has to be over three chars
@@ -65,10 +62,7 @@ server.use("/posts", allRoutes.postRouter)
 //     next()
 //   }
 // }
-function logger(req, res, next) {
-console.log(`${req.method} ${req.path} ${req.body}`);
-next()
-}
+
 
 
 // function logger(req, res, next) {
